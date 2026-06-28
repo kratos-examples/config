@@ -21,6 +21,7 @@ const OperationArticleServiceCreateArticle = "/article.ArticleService/CreateArti
 const OperationArticleServiceDeleteArticle = "/article.ArticleService/DeleteArticle"
 const OperationArticleServiceGetArticle = "/article.ArticleService/GetArticle"
 const OperationArticleServiceListArticles = "/article.ArticleService/ListArticles"
+const OperationArticleServiceListStudentArticles = "/article.ArticleService/ListStudentArticles"
 const OperationArticleServiceUpdateArticle = "/article.ArticleService/UpdateArticle"
 
 type ArticleServiceHTTPServer interface {
@@ -28,6 +29,7 @@ type ArticleServiceHTTPServer interface {
 	DeleteArticle(context.Context, *DeleteArticleRequest) (*DeleteArticleReply, error)
 	GetArticle(context.Context, *GetArticleRequest) (*GetArticleReply, error)
 	ListArticles(context.Context, *ListArticlesRequest) (*ListArticlesReply, error)
+	ListStudentArticles(context.Context, *ListStudentArticlesRequest) (*ListArticlesReply, error)
 	UpdateArticle(context.Context, *UpdateArticleRequest) (*UpdateArticleReply, error)
 }
 
@@ -38,6 +40,7 @@ func RegisterArticleServiceHTTPServer(s *http.Server, srv ArticleServiceHTTPServ
 	r.Handle("DELETE", "/articles/{id}", _ArticleService_DeleteArticle0_HTTP_Handler(srv))
 	r.Handle("GET", "/articles/{id}", _ArticleService_GetArticle0_HTTP_Handler(srv))
 	r.Handle("GET", "/articles", _ArticleService_ListArticles0_HTTP_Handler(srv))
+	r.Handle("GET", "/students/{student_id}/articles", _ArticleService_ListStudentArticles0_HTTP_Handler(srv))
 }
 
 func _ArticleService_CreateArticle0_HTTP_Handler(srv ArticleServiceHTTPServer) func(ctx http.Context) error {
@@ -144,11 +147,34 @@ func _ArticleService_ListArticles0_HTTP_Handler(srv ArticleServiceHTTPServer) fu
 	}
 }
 
+func _ArticleService_ListStudentArticles0_HTTP_Handler(srv ArticleServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ListStudentArticlesRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationArticleServiceListStudentArticles)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ListStudentArticles(ctx, req.(*ListStudentArticlesRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ListArticlesReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ArticleServiceHTTPClient interface {
 	CreateArticle(ctx context.Context, req *CreateArticleRequest, opts ...http.CallOption) (rsp *CreateArticleReply, err error)
 	DeleteArticle(ctx context.Context, req *DeleteArticleRequest, opts ...http.CallOption) (rsp *DeleteArticleReply, err error)
 	GetArticle(ctx context.Context, req *GetArticleRequest, opts ...http.CallOption) (rsp *GetArticleReply, err error)
 	ListArticles(ctx context.Context, req *ListArticlesRequest, opts ...http.CallOption) (rsp *ListArticlesReply, err error)
+	ListStudentArticles(ctx context.Context, req *ListStudentArticlesRequest, opts ...http.CallOption) (rsp *ListArticlesReply, err error)
 	UpdateArticle(ctx context.Context, req *UpdateArticleRequest, opts ...http.CallOption) (rsp *UpdateArticleReply, err error)
 }
 
@@ -216,6 +242,22 @@ func (c *ArticleServiceHTTPClientImpl) ListArticles(ctx context.Context, in *Lis
 	opts = append([]http.CallOption{
 		http.Accept("application/protojson"),
 		http.Operation(OperationArticleServiceListArticles),
+		http.PathTemplate(pattern),
+	}, opts...)
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *ArticleServiceHTTPClientImpl) ListStudentArticles(ctx context.Context, in *ListStudentArticlesRequest, opts ...http.CallOption) (*ListArticlesReply, error) {
+	var out ListArticlesReply
+	pattern := "/students/{student_id}/articles"
+	path := http.BuildPath(pattern, in, http.WithQueryParams())
+	opts = append([]http.CallOption{
+		http.Accept("application/protojson"),
+		http.Operation(OperationArticleServiceListStudentArticles),
 		http.PathTemplate(pattern),
 	}, opts...)
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)

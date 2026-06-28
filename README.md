@@ -235,7 +235,7 @@ The project demonstrates a two-stage validation pattern:
 
 ### Data Access
 
-The source project uses `gofakeit` to generate mock data, keeping the focus on the framework and its toolchain integration. Fork projects (such as [gorm](https://github.com/kratos-examples/gorm)) use GORM + SQLite database operations, demonstrating production-grade CRUD patterns with `gormrepo`.
+Both demos use a shared PostgreSQL database via GORM.
 
 <!-- TEMPLATE (EN) BEGIN: STANDARD PROJECT FOOTER -->
 <!-- VERSION 2025-11-25 03:52:28.131064 +0000 UTC -->

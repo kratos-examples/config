@@ -235,7 +235,7 @@ go test -v -run TestGenerateAsideChanges # 生成 aside.md
 
 ### 数据层
 
-源项目使用 `gofakeit` 生成模拟数据，专注于框架结构和工具链集成的展示。Fork 项目（如 [gorm](https://github.com/kratos-examples/gorm)）将模拟数据替换为基于 GORM + SQLite 的真实数据库操作，演示生产级别的 CRUD 模式和 `gormrepo` 的使用。
+两个演示通过 GORM 使用同一个 PostgreSQL 数据库。
 
 <!-- TEMPLATE (ZH) BEGIN: STANDARD PROJECT FOOTER -->
 <!-- VERSION 2025-11-25 03:52:28.131064 +0000 UTC -->
