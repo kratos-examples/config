@@ -2,32 +2,31 @@
 
 Code differences compared to source project.
 
-## cmd/demo1kratos/main.go (+12 -4)
+## cmd/demo1kratos/main.go (+11 -4)
 
 ```diff
-@@ -3,15 +3,16 @@
- import (
+@@ -4,15 +4,16 @@
  	"flag"
+ 	"log/slog"
  	"os"
 +	"path/filepath"
  
- 	"github.com/go-kratos/kratos/v2"
- 	"github.com/go-kratos/kratos/v2/config"
--	"github.com/go-kratos/kratos/v2/config/file"
- 	"github.com/go-kratos/kratos/v2/log"
- 	"github.com/go-kratos/kratos/v2/middleware/tracing"
- 	"github.com/go-kratos/kratos/v2/transport/grpc"
- 	"github.com/go-kratos/kratos/v2/transport/http"
+ 	"github.com/go-kratos/kratos/contrib/otel/v3/tracing"
+ 	"github.com/go-kratos/kratos/v3"
+ 	"github.com/go-kratos/kratos/v3/config"
+-	"github.com/go-kratos/kratos/v3/config/file"
+ 	"github.com/go-kratos/kratos/v3/log"
+ 	"github.com/go-kratos/kratos/v3/transport/grpc"
+ 	"github.com/go-kratos/kratos/v3/transport/http"
  	"github.com/yylego/done"
 +	"github.com/yylego/kratos-config/configkratos"
  	"github.com/yylego/kratos-examples/demo1kratos/internal/conf"
  	"github.com/yylego/must"
  	"github.com/yylego/rese"
-@@ -56,10 +57,17 @@
- 		"trace.id", tracing.TraceID(),
- 		"span.id", tracing.SpanID(),
+@@ -62,10 +63,16 @@
+ 		slog.String("service.version", Version),
  	)
-+
+ 	log.SetDefault(logger)
 +	// demo1 uses DataStatic to load static config
 +	// demo1 使用 DataStatic 加载静态配置
 +	var sources []config.Source
