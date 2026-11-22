@@ -2,10 +2,10 @@
 
 Code differences compared to source project.
 
-## cmd/demo1kratos/main.go (+11 -4)
+## cmd/demo1kratos/main.go (+12 -5)
 
 ```diff
-@@ -4,15 +4,16 @@
+@@ -4,16 +4,17 @@
  	"flag"
  	"log/slog"
  	"os"
@@ -14,6 +14,7 @@ Code differences compared to source project.
  	"github.com/go-kratos/kratos/contrib/otel/v3/tracing"
  	"github.com/go-kratos/kratos/v3"
  	"github.com/go-kratos/kratos/v3/config"
+ 	"github.com/go-kratos/kratos/v3/config/env"
 -	"github.com/go-kratos/kratos/v3/config/file"
  	"github.com/go-kratos/kratos/v3/log"
  	"github.com/go-kratos/kratos/v3/transport/grpc"
@@ -23,7 +24,7 @@ Code differences compared to source project.
  	"github.com/yylego/kratos-examples/demo1kratos/internal/conf"
  	"github.com/yylego/must"
  	"github.com/yylego/rese"
-@@ -62,10 +63,16 @@
+@@ -61,11 +62,17 @@
  		slog.String("service.version", Version),
  	)
  	log.SetDefault(logger)
@@ -35,9 +36,11 @@ Code differences compared to source project.
 +		configData := rese.A1(os.ReadFile(configPath))
 +		sources = append(sources, configkratos.NewDataStatic(configData, "yaml"))
 +	}
++	sources = append(sources, env.NewSource("KRATOS"))
  	c := config.New(
 -		config.WithSource(
 -			file.NewSource(flagconf),
+-			env.NewSource("KRATOS"),
 -		),
 +		config.WithSource(sources...),
  	)
